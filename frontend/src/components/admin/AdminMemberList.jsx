@@ -4,7 +4,9 @@ import { getMembers } from "../../services/memberService";
 import { normalizeRole } from "../../constants/roles";
 import { formatDateTime } from "../../utils/formatDate";
 import MemberDetailPopup from "./MemberDetailPopup";
+import AdminCreatePopup from "./AdminCreatePopup";
 import Search from "../common/search";
+import { Plus } from "lucide-react";
 
 /**
  * 관리자 회원 관리 리스트
@@ -27,7 +29,20 @@ const AdminMemberList = () => {
   const [sortOrder, setSortOrder] = useState("최신순");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedMember, setSelectedMember] = useState(null);
+  const [showAdminCreate, setShowAdminCreate] = useState(false);
   const itemsPerPage = 15;
+
+  const addAdminButton = (
+    <button
+      type="button"
+      className="admin-add-btn"
+      onClick={() => setShowAdminCreate(true)}
+      title="관리자 추가"
+      aria-label="관리자 추가"
+    >
+      <Plus size={14} strokeWidth={2.5} />
+    </button>
+  );
 
   const loadData = async () => {
     try {
@@ -108,6 +123,7 @@ const AdminMemberList = () => {
               </label>
             ))}
           </div>
+          {addAdminButton}
         </div>
 
         <div className="admin-filters-right">
@@ -174,6 +190,13 @@ const AdminMemberList = () => {
         <span>{currentPage} / {totalPages}</span>
         <button disabled={currentPage >= totalPages} onClick={() => setCurrentPage((p) => p + 1)}>다음</button>
       </div>
+
+      {/* 관리자 추가 팝업 */}
+      <AdminCreatePopup
+        isOpen={showAdminCreate}
+        onClose={() => setShowAdminCreate(false)}
+        onCreated={loadData}
+      />
 
       {/* 회원 상세 팝업 */}
       <MemberDetailPopup

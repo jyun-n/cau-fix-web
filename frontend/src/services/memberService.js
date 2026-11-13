@@ -62,6 +62,26 @@ export async function registerMember({ login_id, password, name, role, dept, pho
 }
 
 /**
+ * 관리자 생성 비밀번호 확인 (관리자)
+ */
+export async function verifyAdminCreatePassword(create_password) {
+  return apiClient('/members/admin/verify', {
+    method: 'POST',
+    body: JSON.stringify({ create_password }),
+  });
+}
+
+/**
+ * 관리자 계정 생성 (관리자) — 생성 비밀번호를 서버에서 다시 검증
+ */
+export async function createAdminMember({ create_password, login_id, password, name, dept, phone }) {
+  return apiClient('/members/admin', {
+    method: 'POST',
+    body: JSON.stringify({ create_password, login_id, password, name, dept, phone }),
+  });
+}
+
+/**
  * 회원 프로필 조회 (처리자 정보)
  */
 export async function getMemberProfile(id) {

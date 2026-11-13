@@ -21,6 +21,17 @@ const memberModel = {
     return result.rows[0];
   },
 
+  // 관리자 계정 생성 (관리자 화면에서 등록 — 즉시 승인 상태)
+  createAdmin: async ({ login_id, password, name, dept, phone }) => {
+    const result = await pool.query(
+      `INSERT INTO member (login_id, password, name, role, dept, phone, is_approved)
+       VALUES ($1, $2, $3, 'A', $4, $5, TRUE)
+       RETURNING member_id, login_id, name, role, dept, phone, is_approved, created_at`,
+      [login_id, password, name, dept, phone]
+    );
+    return result.rows[0];
+  },
+
   // 회원 목록 조회 (관리자) — 탈퇴 회원 포함 (상태 표시용 is_deleted/deleted_at 반환)
   findAll: async () => {
     const result = await pool.query(

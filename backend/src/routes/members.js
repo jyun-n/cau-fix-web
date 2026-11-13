@@ -2,9 +2,14 @@ const express = require('express');
 const router = express.Router();
 const memberController = require('../controllers/memberController');
 const authMiddleware = require('../middlewares/auth');
+const { loginLimiter } = require('../middlewares/rateLimiter');
 
 // 회원 목록 조회 (관리자)
 router.get('/', authMiddleware, memberController.getAll);
+
+// 관리자 계정 생성 (관리자) — 생성 비밀번호 확인 후 생성. 비밀번호 대입 방지를 위해 실패 횟수 제한.
+router.post('/admin/verify', authMiddleware, loginLimiter, memberController.verifyAdminCreatePassword);
+router.post('/admin', authMiddleware, loginLimiter, memberController.createAdmin);
 
 // 내 정보 수정 (본인)
 router.put('/me', authMiddleware, memberController.updateProfile);
